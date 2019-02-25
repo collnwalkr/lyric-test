@@ -36,12 +36,21 @@ const artistLineStyle = palette =>
     backgroundColor: palette.darkVibrant
   })
 
+const imageStyle = css({
+  width: "100%"
+})
+
+const imageWrapperStyle = css({
+  maxWidth: "100%",
+  width: 270,
+  minHeight: 270
+})
+
 class Song extends Component {
   render() {
-    const { image, artist, song, selected, onClick } = this.props
-
+    const { album_image, artist, title, selected, onClick } = this.props
     return (
-      <Palette image={image}>
+      <Palette image={album_image.url}>
         {derivedPalette => {
           const palette = {
             ...defaultPalette,
@@ -50,14 +59,16 @@ class Song extends Component {
           return (
             <div
               className={songWrapperStyle(selected)}
-              onClick={() => onClick(palette, song)}
+              onClick={() => onClick(palette, title)}
             >
-              <img
-                src={image}
-                alt={`${song} by ${artist}`}
-                style={{ maxWidth: "100%" }}
-              />
-              <div className={songLineStyle(palette)}>{song}</div>
+              <div className={imageWrapperStyle}>
+                <img
+                  src={album_image.url}
+                  alt={`${title} by ${artist} album cover`}
+                  className={imageStyle}
+                />
+              </div>
+              <div className={songLineStyle(palette)}>{title}</div>
               <div className={artistLineStyle(palette)}>{artist}</div>
             </div>
           )

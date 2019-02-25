@@ -6,30 +6,50 @@ const { Provider: StateProvider, Consumer: StateConsumer } = createContext()
 
 const CURRENT_SONGS = [
   {
-    image: process.env.PUBLIC_URL + "/images/Bitmap.png",
-    artist: "Ariana Grande",
-    song: "break up with your girlfriend, i'm bored"
+    album_image: {
+      height: 640,
+      url: "https://i.scdn.co/image/33dd861169e8474884bc9fcde90c6ec79cf691b9",
+      width: 640
+    },
+    title: "Cutlass Cruiser",
+    artist: "TOPS",
+    link: "https://open.spotify.com/track/6rnMwp1TDEw8wwbX7S9Ot9"
   },
   {
-    image: process.env.PUBLIC_URL + "/images/Bitmap2.png",
-    artist: "Travis Scott",
-    song: "SICKO MODE"
+    album_image: {
+      height: 640,
+      url: "https://i.scdn.co/image/e2df238c20591b8814f01842a987f69abc96c8ae",
+      width: 640
+    },
+    title: "Bustin Loose (feat. Saara Maria & Austin Antione)",
+    artist: "Joomanji",
+    link: "https://open.spotify.com/track/0p1ZvKFcy7tRv9n6G9MQv1"
   },
   {
-    image: process.env.PUBLIC_URL + "/images/Bitmap3.png",
-    artist: "Khalid",
-    song: "Talk"
+    album_image: {
+      height: 640,
+      url: "https://i.scdn.co/image/8f95749065a768db1902245c4f89e8da89b07657",
+      width: 640
+    },
+    title: "Come and Be a Winner",
+    artist: "Sharon Jones & The Dap-Kings",
+    link: "https://open.spotify.com/track/5mC5TUumk179DX1gduud3b"
   },
   {
-    image: process.env.PUBLIC_URL + "/images/Bitmap4.png",
-    artist: "Ariana Grande",
-    song: "thank u, next"
+    album_image: {
+      height: 640,
+      url: "https://i.scdn.co/image/8120e3c26609f4063b23acf43fd5cc0add41442d",
+      width: 640
+    },
+    title: "Tezeta (Nostalgia)",
+    artist: "Mulatu Astatke",
+    link: "https://open.spotify.com/track/414J8tKHbtF16XOiHGBEso"
   }
 ]
 
 class State extends Component {
   state = {
-    selectedSong: undefined,
+    selectedSong: false,
     loggedIn: undefined,
     currentSongs: CURRENT_SONGS,
     currentQuote: [
@@ -56,17 +76,14 @@ class State extends Component {
     this.setState(alreadyInLocalStorage())
     try {
       await isAuthenticated()
-      this.state.logIn()
-    } catch (error) {
-      this.state.logOut()
-    }
-    try {
       if (!ls.get("user")) {
         const { data: user } = await getUser()
-        this.state.setUser(user)
+        this.setState({ user }, () => this.state.logIn())
+      } else {
+        this.state.logIn()
       }
     } catch (error) {
-      console.log("error", error)
+      this.state.logOut()
     }
   }
 

@@ -11,7 +11,7 @@ const buttonStyle = color =>
     padding: `16px 20px`,
     minWidth: 258,
     textAlign: "center",
-    boxShadow: "0px 0px 8px #000",
+    boxShadow: "0px 0px 8px rgba(0,0,0,0.2)",
     boxSizing: "border-box",
     margin: 0,
     textDecoration: "none",

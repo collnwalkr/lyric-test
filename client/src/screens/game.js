@@ -1,9 +1,10 @@
 import React, { Component } from "react"
 import { css } from "emotion"
-import State from "../context/state"
-import ColorWash, { ColorWashConsumer } from "../context/color-wash"
+import { getRecent } from "../api"
+import { ColorWashConsumer } from "../context/color-wash"
 import Songs from "../components/songs"
 import Quote from "../components/quote"
+import GameInfo from "../components/game-info"
 
 const gameWrapperStyle = backgroundColor =>
   css({
@@ -14,22 +15,23 @@ const gameWrapperStyle = backgroundColor =>
   })
 
 class Game extends Component {
+  componentDidMount() {
+    // getRecent().then(({ data }) => {
+    //   console.log("data", data)
+    // })
+  }
+
   render() {
     return (
-      <State>
-        <ColorWash>
-          <ColorWashConsumer>
-            {({ backgroundColor }) => {
-              return (
-                <div className={gameWrapperStyle(backgroundColor)}>
-                  <Quote />
-                  <Songs />
-                </div>
-              )
-            }}
-          </ColorWashConsumer>
-        </ColorWash>
-      </State>
+      <ColorWashConsumer>
+        {({ currentPalette }) => (
+          <div className={gameWrapperStyle(currentPalette.darkMuted)}>
+            <Quote />
+            <Songs />
+            <GameInfo />
+          </div>
+        )}
+      </ColorWashConsumer>
     )
   }
 }

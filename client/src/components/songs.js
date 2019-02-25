@@ -15,15 +15,15 @@ class Songs extends Component {
       <StateConsumer>
         {({ currentSongs, selectedSong, selectSong }) => (
           <ColorWashConsumer>
-            {({ changeBackground }) => (
+            {({ changePalette }) => (
               <div className={albumsWrapperStyle}>
                 {currentSongs.map((songObj, index) => (
                   <Song
                     key={index}
-                    selected={songObj.song === selectedSong}
-                    onClick={(palette, song) => {
-                      changeBackground(palette.darkMuted)
-                      selectSong(song)
+                    selected={!selectedSong || songObj.title === selectedSong}
+                    onClick={(palette, title) => {
+                      changePalette(palette)
+                      selectSong(title)
                     }}
                     {...songObj}
                   />

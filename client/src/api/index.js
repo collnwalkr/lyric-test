@@ -16,8 +16,8 @@ const a = axios.create({
 
 const getUser = () => a.get("user")
 
-const login = () => a.get("login")
-
 const isAuthenticated = () => a.get("isAuthenticated")
 
-export { getUser, login, isAuthenticated }
+const getRecent = () => a.get("recent")
+
+export { getUser, isAuthenticated, getRecent }

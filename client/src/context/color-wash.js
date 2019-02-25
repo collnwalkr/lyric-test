@@ -6,12 +6,25 @@ const {
   Consumer: ColorWashConsumer
 } = createContext()
 
+const defaultPalette = {
+  darkMuted: "#333",
+  lightMuted: "#DDD",
+  darkVibrant: "#222",
+  vibrant: "#FFF",
+  lightVibrant: "#FFF"
+}
+
 class ColorWash extends Component {
   state = {
     backgroundColor: "#E1E1E1",
-    changeBackground: backgroundColor => {
-      ls.set("backgroundColor", backgroundColor)
-      this.setState({ backgroundColor })
+    currentPalette: defaultPalette,
+    changePalette: currentPalette => {
+      ls.set("currentPalette", currentPalette)
+      this.setState({ currentPalette })
+    },
+    resetPalette: () => {
+      ls.set("currentPalette", defaultPalette)
+      this.setState({ currentPalette: defaultPalette })
     }
   }
 

@@ -1,6 +1,7 @@
 import React from "react"
 import { injectGlobal } from "emotion"
 import State from "./context/state"
+import ColorWash from "./context/color-wash"
 import Router from "./router"
 
 injectGlobal`
@@ -18,7 +19,9 @@ injectGlobal`
 
 const App = () => (
   <State>
-    <Router />
+    <ColorWash>
+      <Router />
+    </ColorWash>
   </State>
 )
 
