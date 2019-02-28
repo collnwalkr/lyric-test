@@ -1,5 +1,6 @@
 import React, { createContext, Component } from "react"
 import ls from "local-storage"
+import sample from "lodash/sample"
 import { isAuthenticated, getUser } from "../api"
 import { alreadyInLocalStorage } from "../utils"
 const { Provider: StateProvider, Consumer: StateConsumer } = createContext()
@@ -50,12 +51,21 @@ const CURRENT_SONGS = [
 class State extends Component {
   state = {
     selectedSong: false,
+    correctSong: CURRENT_SONGS[3],
     loggedIn: undefined,
     currentSongs: CURRENT_SONGS,
+    score: {
+      count: 0,
+      correct: 0
+    },
     currentQuote: [
       "Now I wanna know how you taste (Mmm-mmm)",
       "Usually don't give it away (Yeah, yeah)"
     ],
+    setQuote: currentQuote => {
+      ls.set("currentQuote", currentQuote)
+      this.setState({ currentQuote })
+    },
     setUser: user => {
       ls.set("user", user)
       this.setState({ user })
@@ -63,6 +73,28 @@ class State extends Component {
     selectSong: selectedSong => {
       ls.set("selectedSong", selectedSong)
       this.setState({ selectedSong })
+    },
+    chooseNewCorrectSong: () => {
+      const nextCorrectSong = sample(CURRENT_SONGS)
+      ls.set("correctSong", nextCorrectSong)
+      this.setState({ correctSong: nextCorrectSong })
+    },
+    adjustScore: increase => {
+      const { count, correct } = this.state.score
+      const newScore = {
+        count: count + 1,
+        correct: increase ? correct + 1 : correct
+      }
+      ls.set("score", newScore)
+      this.setState({ score: newScore })
+    },
+    resetScore: () => {
+      const newScore = {
+        count: 0,
+        correct: 0
+      }
+      ls.set("score", newScore)
+      this.setState({ score: newScore })
     },
     logIn: () => {
       this.setState({ loggedIn: true })

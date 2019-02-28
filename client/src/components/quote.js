@@ -19,8 +19,9 @@ class Quote extends Component {
   render() {
     return (
       <StateConsumer>
-        {({ currentQuote }) => (
+        {({ currentQuote, correctSong }) => (
           <div className={quoteWrapperStyle}>
+            <p className={quoteLineStyle}>{correctSong.title}</p>
             {currentQuote.map((line, index) => (
               <div key={index} style={{ paddingLeft: 4, paddingRight: 4 }}>
                 <p className={quoteLineStyle}>{line}</p>

@@ -27,23 +27,44 @@ class Songs extends Component {
   render() {
     return (
       <StateConsumer>
-        {({ selectSong }) => (
+        {({
+          selectSong,
+          chooseNewCorrectSong,
+          correctSong,
+          selectedSong,
+          resetScore,
+          score
+        }) => (
           <ColorWashConsumer>
             {({ currentPalette, resetPalette }) => (
               <div className={gameInfoWrapperStyle}>
                 <div
                   className={songInfoWrapperStyle(currentPalette.darkVibrant)}
                 >
-                  <p className={scoreStyle}>1/1</p>
+                  <p className={scoreStyle}>{`${score.correct}/${
+                    score.count
+                  }`}</p>
                 </div>
                 <Button
                   color={currentPalette.lightVibrant}
                   onClick={() => {
+                    chooseNewCorrectSong()
                     resetPalette()
                     selectSong(false)
                   }}
                 >
                   Next Song
+                </Button>
+                <Button
+                  color={"red"}
+                  onClick={() => {
+                    chooseNewCorrectSong()
+                    resetPalette()
+                    selectSong(false)
+                    resetScore()
+                  }}
+                >
+                  New Game
                 </Button>
               </div>
             )}
