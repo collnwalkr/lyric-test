@@ -18,23 +18,49 @@ const songInfoWrapperStyle = background =>
     padding: "16px 24px"
   })
 
+const spotifyLogoStyle = css({
+  marginRight: 8,
+  width: 23,
+  height: 23
+})
+
+const spotifyLinkWrapper = disabled =>
+  css({
+    opacity: disabled ? 0.3 : 1,
+    display: "flex",
+    alignItems: "center",
+    marginLeft: 20,
+    color: "white",
+    textDecoration: "none",
+    marginRight: 10
+  })
+
 const scoreStyle = css({
   fontWeight: "bold",
   fontSize: 28
 })
 
+const SpotifyLink = ({ url, disabled }) => (
+  <a
+    href={disabled ? null : url}
+    target="_blank"
+    rel="noopener noreferrer"
+    className={spotifyLinkWrapper(disabled)}
+  >
+    <img
+      alt=""
+      className={spotifyLogoStyle}
+      src={process.env.PUBLIC_URL + "/images/spotify-logo.png"}
+    />
+    Spotify link
+  </a>
+)
+
 class Songs extends Component {
   render() {
     return (
       <StateConsumer>
-        {({
-          selectSong,
-          chooseNewCorrectSong,
-          correctSong,
-          selectedSong,
-          resetScore,
-          score
-        }) => (
+        {({ goToNextSong, resetGame, score, selectedSong, correctSong }) => (
           <ColorWashConsumer>
             {({ currentPalette, resetPalette }) => (
               <div className={gameInfoWrapperStyle}>
@@ -44,13 +70,17 @@ class Songs extends Component {
                   <p className={scoreStyle}>{`${score.correct}/${
                     score.count
                   }`}</p>
+                  <SpotifyLink
+                    disabled={!selectedSong}
+                    url={correctSong.link}
+                  />
                 </div>
                 <Button
+                  disabled={!selectedSong}
                   color={currentPalette.lightVibrant}
                   onClick={() => {
-                    chooseNewCorrectSong()
+                    goToNextSong()
                     resetPalette()
-                    selectSong(false)
                   }}
                 >
                   Next Song
@@ -58,10 +88,8 @@ class Songs extends Component {
                 <Button
                   color={"red"}
                   onClick={() => {
-                    chooseNewCorrectSong()
+                    resetGame()
                     resetPalette()
-                    selectSong(false)
-                    resetScore()
                   }}
                 >
                   New Game

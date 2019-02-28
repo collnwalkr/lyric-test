@@ -47,7 +47,7 @@ app.get("/recent", checkAccess, (req, res) => {
       const responseItems = items.map(({ track }) => {
         if (track.album) {
           return {
-            album_image: track.album.images[0],
+            album_image: track.album.images[0].url,
             title: track.name,
             artist: track.artists[0].name,
             link: track.external_urls.spotify

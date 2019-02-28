@@ -24,7 +24,7 @@ class Songs extends Component {
         }) => (
           <ColorWashConsumer>
             {({ changePalette }) => (
-              <Palette image={correctSong.album_image.url}>
+              <Palette image={correctSong.album_image}>
                 {derivedPalette => {
                   const palette = getPalette(derivedPalette)
                   return (

@@ -5,9 +5,9 @@ import { getPalette } from "../styles"
 
 const songWrapperStyle = (madeASelection, selected, correct) =>
   css({
-    opacity: !madeASelection || selected || correct ? 1 : 0.4,
-    mixBlendMode:
-      !madeASelection || selected || correct ? "normal" : "luminosity",
+    position: "relative",
+    opacity: !madeASelection || correct ? 1 : 0.4,
+    mixBlendMode: !madeASelection || correct ? "normal" : "luminosity",
     cursor: !madeASelection ? "pointer" : null,
     marginBottom: 15,
     marginRight: 20,
@@ -15,9 +15,9 @@ const songWrapperStyle = (madeASelection, selected, correct) =>
     color: "white",
     maxWidth: 270,
     transition: "transform 150ms ease",
-    transform: !madeASelection || selected || correct ? "scale(1.03)" : null,
+    transform: madeASelection && correct ? "scale(1.03)" : null,
     "&:hover": {
-      transform: !madeASelection || selected || correct ? "scale(1.03)" : null
+      transform: !madeASelection ? "scale(1.03)" : null
     }
   })
 
@@ -35,7 +35,16 @@ const artistLineStyle = palette =>
   })
 
 const incorrectEmojiStyle = css({
-  fontSize: 100
+  fontSize: 100,
+  height: 0,
+  position: "absolute",
+  top: 0,
+  bottom: 100,
+  left: 0,
+  right: 0,
+  textAlign: "center",
+  lineHeight: 0.5,
+  margin: "auto"
 })
 
 const imageStyle = imageUrl =>
@@ -47,11 +56,11 @@ const imageStyle = imageUrl =>
     backgroundSize: "cover",
     maxWidth: "100%",
     width: 270,
-    minHeight: 270,
-    marginBottom: 5,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center"
+    paddingTop: "100%",
+    marginBottom: 5
+    // display: "flex",
+    // alignItems: "center",
+    // justifyContent: "center"
   })
 
 class Song extends Component {
@@ -66,7 +75,7 @@ class Song extends Component {
       correct
     } = this.props
     return (
-      <Palette image={album_image.url}>
+      <Palette image={album_image}>
         {derivedPalette => {
           const palette = getPalette(derivedPalette)
           return (
@@ -74,9 +83,9 @@ class Song extends Component {
               className={songWrapperStyle(madeASelection, selected, correct)}
               onClick={() => onClick(title)}
             >
-              <div className={imageStyle(album_image.url)}>
+              <div className={imageStyle(album_image)}>
                 {selected && !correct && (
-                  <span className={incorrectEmojiStyle}>🥴</span>
+                  <span className={incorrectEmojiStyle}>❌</span>
                 )}
               </div>
               <div className={songLineStyle(palette)}>{title}</div>
