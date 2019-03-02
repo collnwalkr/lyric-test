@@ -1,10 +1,10 @@
 const passport = require("passport")
-const SpotifyStrategy = require("passport-spotify").Strategy
+const SpotifyStrategy = require("passport-spotify/lib/passport-spotify/strategy")
 
 const callbackURL =
   process.env.NODE_ENV === "production"
-    ? "http://my-app.com/auth/spotify/callback"
-    : "http://localhost:3030/auth/spotify/callback"
+    ? "/api/auth/spotify/callback"
+    : "http://localhost:3030/api/auth/spotify/callback"
 
 passport.use(
   new SpotifyStrategy(

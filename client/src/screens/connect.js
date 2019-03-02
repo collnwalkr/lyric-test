@@ -4,8 +4,8 @@ import Button from "../components/button"
 
 const connectURL =
   process.env.NODE_ENV === "production"
-    ? "http://my-app.com/login"
-    : "http://localhost:3030/login"
+    ? "/api/login"
+    : "http://localhost:3030/api/login"
 
 const headerStyle = css({
   fontSize: 100

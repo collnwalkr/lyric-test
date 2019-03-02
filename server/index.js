@@ -1,4 +1,4 @@
-require("dotenv").config()
+require("now-env")
 const express = require("express")
 const spotify = require("./src/spotify")
 const middleware = require("./src/middleware")
@@ -6,11 +6,10 @@ const store = require("./src/store")
 const passport = require("./src/passport")
 
 const app = express()
-const PORT = 3030
 
 app.use(...middleware)
 
-app.get("/", (req, res) => {
+app.get("/api/", (req, res) => {
   if (req.isAuthenticated()) {
     res.send(req.user.displayName)
   } else {
@@ -18,7 +17,7 @@ app.get("/", (req, res) => {
   }
 })
 
-app.get("/user", (req, res) => {
+app.get("/api/user", (req, res) => {
   if (req.isAuthenticated()) {
     res.send({
       displayName: req.user.displayName,
@@ -29,7 +28,7 @@ app.get("/user", (req, res) => {
   }
 })
 
-app.get("/isAuthenticated", (req, res) => {
+app.get("/api/isAuthenticated", (req, res) => {
   if (req.isAuthenticated()) {
     res.send(true)
   } else {
@@ -37,7 +36,7 @@ app.get("/isAuthenticated", (req, res) => {
   }
 })
 
-app.get("/recent", checkAccess, (req, res) => {
+app.get("/api/recent", checkAccess, (req, res) => {
   spotify
     .recentlyPlayed(req.user)
     .then(response => {
@@ -61,17 +60,19 @@ app.get("/recent", checkAccess, (req, res) => {
     })
 })
 
-app.get("/login", (req, res) => {
-  res.redirect("/auth/spotify")
+app.get("/api/login", (req, res) => {
+  res.redirect("/api/auth/spotify")
 })
 
-app.get("/logout", (req, res) => {
+app.get("/api/logout", (req, res) => {
   req.logout()
-  res.redirect("http://localhost:3000/")
+  process.env.NODE_ENV === "production"
+    ? res.redirect("/")
+    : res.redirect("http://localhost:3000/")
 })
 
 app.get(
-  "/auth/spotify",
+  "/api/auth/spotify",
   passport.authenticate("spotify", {
     scope: ["user-read-recently-played"]
   }),
@@ -79,10 +80,12 @@ app.get(
 )
 
 app.get(
-  "/auth/spotify/callback",
-  passport.authenticate("spotify", { failureRedirect: "/login" }),
+  "/api/auth/spotify/callback",
+  passport.authenticate("spotify", { failureRedirect: "/" }),
   (req, res) => {
-    res.redirect("http://localhost:3000/")
+    process.env.NODE_ENV === "production"
+      ? res.redirect("/")
+      : res.redirect("http://localhost:3000/")
   }
 )
 
@@ -100,6 +103,10 @@ async function checkAccess(req, res, next) {
   }
 }
 
-app.listen(PORT, () => {
-  console.log(`🗣 listening on ${PORT}`)
-})
+if (process.env.NODE_ENV === "production") {
+  app.listen()
+} else {
+  app.listen(3030, () => {
+    console.log(`🗣 listening on 3030`)
+  })
+}

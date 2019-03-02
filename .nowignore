@@ -1,0 +1,5 @@
+client/.env
+client/build
+server/.env
+server/yarn.lock
+server/now-secrets.json

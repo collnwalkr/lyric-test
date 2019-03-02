@@ -6,8 +6,8 @@ import { css } from "emotion"
 
 const logoutURL =
   process.env.NODE_ENV === "production"
-    ? "http://my-app.com/logout"
-    : "http://localhost:3030/logout"
+    ? "/api/logout"
+    : "http://localhost:3030/api/logout"
 
 const wrapperStyle = css({
   width: "100%",

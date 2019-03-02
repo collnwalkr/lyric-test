@@ -1,0 +1,38 @@
+{
+  "version": 2,
+  "name": "lyric-test",
+  "builds": [
+    {
+      "src": "client/package.json",
+      "use": "@now/static-build",
+      "config": { "distDir": "build" }
+    },
+    { "src": "server/index.js", "use": "@now/node-server" }
+  ],
+  "routes": [
+    { "src": "^/api/(.*)", "dest": "/server/index.js" },
+    {
+      "src": "^/static/(.*)",
+      "headers": { "cache-control": "s-maxage=31536000,immutable" },
+      "dest": "/client/static/$1"
+    },
+    { "src": "^/favicon.ico", "dest": "/client/favicon.ico" },
+    { "src": "^/asset-manifest.json", "dest": "/client/asset-manifest.json" },
+    { "src": "^/manifest.json", "dest": "/client/manifest.json" },
+    {
+      "src": "^/precache-manifest.(.*)",
+      "dest": "/client/precache-manifest.$1"
+    },
+    {
+      "src": "^/(.*)",
+      "headers": { "cache-control": "s-maxage=0" },
+      "dest": "/client/index.html"
+    }
+  ],
+  "env": {
+    "SPOTIFY_CLIENT_ID": "@spotify_client_id",
+    "SPOTIFY_CLIENT_SECRET": "@spotify_client_secret",
+    "MONGO_ATLAS_PASSWORD": "@mongo_atlas_password",
+    "EXPRESS_SESSION_SECRET": "@express_session_secret"
+  }
+}
