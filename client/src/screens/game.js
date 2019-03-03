@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import { css } from "emotion"
 import { Link } from "react-router-dom"
+import { mq } from "../styles/"
 import { ColorWashConsumer } from "../context/color-wash"
 import Header from "../components/header"
 import Songs from "../components/songs"
@@ -9,13 +10,17 @@ import Quote from "../components/quote"
 import GameInfo from "../components/game-info"
 
 const gameWrapperStyle = backgroundColor =>
-  css({
-    transition: "background-color 300ms ease",
-    backgroundColor,
-    width: "100%",
-    paddingTop: 30,
-    paddingLeft: 20
-  })
+  css(
+    mq({
+      transition: "background-color 300ms ease",
+      backgroundColor,
+      width: "100%",
+      boxSizing: "border-box",
+      paddingTop: 30,
+      paddingLeft: [10, 20],
+      paddingRight: [10, 20]
+    })
+  )
 
 const playAreaWrapperStyle = css({
   display: "flex",

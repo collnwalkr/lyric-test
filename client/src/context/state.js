@@ -43,7 +43,7 @@ class State extends Component {
     nextLyricsUrl: "",
     nextSongOptions: [],
     nextAvailableSongs: [],
-    gameOver: false,
+    gameOver: true,
     loading: false,
     setQuote: quote => {
       return this.setStateAndLocal({ quote })

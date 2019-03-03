@@ -10,6 +10,7 @@ const gameInfoWrapperStyle = css(
   mq({
     display: "flex",
     flexBasis: 1165,
+    maxWidth: "100%",
     flexWrap: "wrap",
     flexDirection: ["column-reverse", "column-reverse", "row"],
     justifyContent: ["flex-start", "flext-start", "flex-start", "flex-end"]
@@ -50,10 +51,13 @@ const socialLinkWrapper = disabled =>
     }
   })
 
-const nextSongStyle = css({
-  marginBottom: 10,
-  marginRight: 20
-})
+const nextSongStyle = css(
+  mq({
+    width: ["100%", "inherit"],
+    marginBottom: 10,
+    marginRight: 20
+  })
+)
 
 const scoreStyle = css({
   fontWeight: "bold",

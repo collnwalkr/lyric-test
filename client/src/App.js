@@ -12,6 +12,7 @@ injectGlobal`
     background-color: #191919;
   }
   #root {
+    overflow-x: hidden;
     min-height: 100vh;
     display: flex;
   }

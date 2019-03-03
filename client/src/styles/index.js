@@ -4,8 +4,8 @@ import facepaint from "facepaint"
 
 const mq = facepaint([
   "@media(min-width: 600px)",
-  "@media(min-width: 900px)",
-  "@media(min-width: 1180px)"
+  "@media(min-width: 870px)",
+  "@media(min-width: 1200px)"
 ])
 
 const defaultPalette = {

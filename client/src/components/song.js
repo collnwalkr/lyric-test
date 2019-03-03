@@ -14,10 +14,13 @@ const songWrapperStyle = (madeASelection, selected, correct) =>
       mixBlendMode: !madeASelection || correct ? "normal" : "luminosity",
       cursor: !madeASelection ? "pointer" : null,
       marginBottom: 15,
-      marginRight: 20,
+      marginRight: [10, 10, 20],
       lineHeight: 1.2,
       color: "white",
-      maxWidth: `calc(50% - 20px)`,
+      maxWidth: [`calc(50% - 5px)`, `calc(50% - 5px)`, `calc(50% - 20px)`],
+      "&:nth-child(even)": {
+        marginRight: [0, 0, 20]
+      },
       flexBasis: SONG_WIDTHS,
       transition: "transform 150ms ease",
       transform: madeASelection && correct ? ["scale(1)", "scale(1.03)"] : null,

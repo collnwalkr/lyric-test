@@ -10,7 +10,7 @@ const quoteWrapperStyle = css(
     fontSize: [20, 30, 35],
     lineHeight: 1.5,
     whiteSpace: "pre-wrap",
-    marginBottom: 30
+    marginBottom: [10, 30, 30]
   })
 )
 
