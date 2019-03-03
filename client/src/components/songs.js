@@ -4,24 +4,23 @@ import Palette from "react-palette"
 import Song from "./song"
 import { StateConsumer } from "../context/state"
 import { ColorWashConsumer } from "../context/color-wash"
-import { getPalette } from "../styles"
+import { getPalette, mq } from "../styles"
 
-const albumsWrapperStyle = css({
-  display: "flex",
-  flexWrap: "wrap"
-})
+const albumsWrapperStyle = css(
+  mq({
+    flex: 0,
+    flexBasis: 1165,
+    display: "flex",
+    flexWrap: "wrap",
+    marginBottom: [10, 10, 50]
+  })
+)
 
 class Songs extends Component {
   render() {
     return (
       <StateConsumer>
-        {({
-          currentSongs,
-          correctSong,
-          selectedSong,
-          selectSong,
-          adjustScore
-        }) => (
+        {({ songOptions, correctSong, selectedSong, setSong, adjustScore }) => (
           <ColorWashConsumer>
             {({ changePalette }) => (
               <Palette image={correctSong.album_image}>
@@ -29,7 +28,7 @@ class Songs extends Component {
                   const palette = getPalette(derivedPalette)
                   return (
                     <div className={albumsWrapperStyle}>
-                      {currentSongs.map((songObj, index) => (
+                      {songOptions.map((songObj, index) => (
                         <Song
                           key={index}
                           correct={songObj.title === correctSong.title}
@@ -38,7 +37,7 @@ class Songs extends Component {
                           onClick={title => {
                             if (!selectedSong) {
                               changePalette(palette)
-                              selectSong(title)
+                              setSong(title)
                               adjustScore(correctSong.title === title)
                             }
                           }}

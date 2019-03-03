@@ -7,7 +7,7 @@ const {
 } = createContext()
 
 const defaultPalette = {
-  darkMuted: "#333",
+  darkMuted: "#191919",
   lightMuted: "#DDD",
   darkVibrant: "#222",
   vibrant: "#FFF",

@@ -3,6 +3,7 @@
     "SPOTIFY_CLIENT_ID": "@spotify_client_id",
     "SPOTIFY_CLIENT_SECRET": "@spotify_client_secret",
     "MONGO_ATLAS_PASSWORD": "@mongo_atlas_password",
-    "EXPRESS_SESSION_SECRET": "@express_session_secret"
+    "EXPRESS_SESSION_SECRET": "@express_session_secret",
+    "GENIUS_TOKEN": "@genius_token"
   }
 }

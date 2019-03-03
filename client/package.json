@@ -5,6 +5,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "emotion": "^10.0.7",
+    "facepaint": "^1.2.1",
     "local-storage": "^1.4.2",
     "lodash": "^4.17.11",
     "react": "^16.8.2",

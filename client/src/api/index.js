@@ -1,5 +1,7 @@
 import axios from "axios"
 
+const removeBadChars = string => string.replace(/\//g, "")
+
 const baseURL =
   process.env.NODE_ENV === "production" ? "/api" : "http://localhost:3030/api"
 
@@ -18,4 +20,7 @@ const isAuthenticated = () => a.get("isAuthenticated")
 
 const getRecent = () => a.get("recent")
 
-export { getUser, isAuthenticated, getRecent }
+const getLyrics = (artist, title) =>
+  a.get(`lyrics/${removeBadChars(artist)}/${removeBadChars(title)}`)
+
+export { getUser, isAuthenticated, getRecent, getLyrics }

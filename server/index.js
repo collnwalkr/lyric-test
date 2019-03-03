@@ -1,6 +1,7 @@
 require("now-env")
 const express = require("express")
 const spotify = require("./src/spotify")
+const genius = require("./src/genius")
 const middleware = require("./src/middleware")
 const store = require("./src/store")
 const passport = require("./src/passport")
@@ -15,6 +16,17 @@ app.get("/api/", (req, res) => {
   } else {
     res.send(`You got home page!`)
   }
+})
+
+app.get("/api/lyrics/:artist/:song", checkAccess, (req, res) => {
+  genius
+    .getLyrics(req.params.artist, req.params.song)
+    .then(response => {
+      res.send(response)
+    })
+    .catch(error => {
+      res.status(500).send(error)
+    })
 })
 
 app.get("/api/user", (req, res) => {

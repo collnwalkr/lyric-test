@@ -11,9 +11,10 @@ const songWrapperStyle = (madeASelection, selected, correct) =>
     cursor: !madeASelection ? "pointer" : null,
     marginBottom: 15,
     marginRight: 20,
-    width: "40%",
+    lineHeight: 1.2,
     color: "white",
-    maxWidth: 270,
+    maxWidth: `calc(50% - 20px)`,
+    flexBasis: 270,
     transition: "transform 150ms ease",
     transform: madeASelection && correct ? "scale(1.03)" : null,
     "&:hover": {
@@ -23,14 +24,14 @@ const songWrapperStyle = (madeASelection, selected, correct) =>
 
 const songLineStyle = palette =>
   css({
-    padding: 4,
+    padding: 8,
     backgroundColor: palette.darkVibrant,
     marginBottom: 5
   })
 
 const artistLineStyle = palette =>
   css({
-    padding: 4,
+    padding: 8,
     backgroundColor: palette.darkVibrant
   })
 
@@ -50,7 +51,7 @@ const incorrectEmojiStyle = css({
 const imageStyle = imageUrl =>
   css({
     backgroundImage: `url(${imageUrl})`,
-    backgroundColor: "#CCC",
+    backgroundColor: "#191919",
     backgroundPosition: "center",
     backgroundRepeat: "no-repeat",
     backgroundSize: "cover",

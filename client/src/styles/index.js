@@ -1,8 +1,15 @@
 import omitBy from "lodash/omitBy"
 import isNil from "lodash/isNil"
+import facepaint from "facepaint"
+
+const mq = facepaint([
+  "@media(min-width: 600px)",
+  "@media(min-width: 920px)",
+  "@media(min-width: 1120px)"
+])
 
 const defaultPalette = {
-  darkMuted: "#333",
+  darkMuted: "#191919",
   lightMuted: "#DDD",
   darkVibrant: "#222",
   vibrant: "#FFF",
@@ -14,4 +21,4 @@ const getPalette = palette => ({
   ...omitBy(palette, isNil)
 })
 
-export { getPalette, defaultPalette }
+export { getPalette, defaultPalette, mq }

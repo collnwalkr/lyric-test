@@ -8,11 +8,19 @@ import GameInfo from "../components/game-info"
 
 const gameWrapperStyle = backgroundColor =>
   css({
+    transition: "background-color 300ms ease",
     backgroundColor,
     width: "100%",
     paddingTop: 20,
     paddingLeft: 20
   })
+
+const playAreaWrapperStyle = css({
+  display: "flex",
+  flexDirection: "row",
+  flexWrap: "wrap",
+  alignItems: "flex-start"
+})
 
 class Game extends Component {
   componentDidMount() {
@@ -27,8 +35,10 @@ class Game extends Component {
         {({ currentPalette }) => (
           <div className={gameWrapperStyle(currentPalette.darkMuted)}>
             <Quote />
-            <Songs />
-            <GameInfo />
+            <div className={playAreaWrapperStyle}>
+              <Songs />
+              <GameInfo />
+            </div>
           </div>
         )}
       </ColorWashConsumer>

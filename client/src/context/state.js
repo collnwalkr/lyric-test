@@ -2,41 +2,14 @@ import React, { createContext, Component } from "react"
 import ls from "local-storage"
 import sample from "lodash/sample"
 import sampleSize from "lodash/sampleSize"
+import random from "lodash/random"
+import isEmpty from "lodash/isEmpty"
 import { isAuthenticated, getUser } from "../api"
 import { alreadyInLocalStorage } from "../utils"
-import { getRecent } from "../api"
+import { getRecent, getLyrics } from "../api"
 const { Provider: StateProvider, Consumer: StateConsumer } = createContext()
 
-// const CURRENT_SONGS = [
-//   {
-//     album_image:
-//       "https://i.scdn.co/image/33dd861169e8474884bc9fcde90c6ec79cf691b9",
-//     title: "Cutlass Cruiser",
-//     artist: "TOPS",
-//     link: "https://open.spotify.com/track/6rnMwp1TDEw8wwbX7S9Ot9"
-//   },
-//   {
-//     album_image:
-//       "https://i.scdn.co/image/e2df238c20591b8814f01842a987f69abc96c8ae",
-//     title: "Bustin Loose (feat. Saara Maria & Austin Antione)",
-//     artist: "Joomanji",
-//     link: "https://open.spotify.com/track/0p1ZvKFcy7tRv9n6G9MQv1"
-//   },
-//   {
-//     album_image:
-//       "https://i.scdn.co/image/8f95749065a768db1902245c4f89e8da89b07657",
-//     title: "Come and Be a Winner",
-//     artist: "Sharon Jones & The Dap-Kings",
-//     link: "https://open.spotify.com/track/5mC5TUumk179DX1gduud3b"
-//   },
-//   {
-//     album_image:
-//       "https://i.scdn.co/image/8120e3c26609f4063b23acf43fd5cc0add41442d",
-//     title: "Tezeta (Nostalgia)",
-//     artist: "Mulatu Astatke",
-//     link: "https://open.spotify.com/track/414J8tKHbtF16XOiHGBEso"
-//   }
-// ]
+const MAX_LINE_LENGTH = 100
 
 class State extends Component {
   setStatePromise = newState =>
@@ -46,67 +19,66 @@ class State extends Component {
       })
     })
 
+  updateStateAndLocal = (key, value) => {
+    ls.set(key, value)
+    return this.setStatePromise({ [key]: value })
+  }
+
   state = {
-    selectedSong: false,
-    correctSong: {},
     loggedIn: undefined,
-    currentSongs: [],
-    availableSongs: [],
     score: {
       count: 0,
       correct: 0
     },
-    currentQuote: [
-      "Now I wanna know how you taste (Mmm-mmm)",
-      "Usually don't give it away (Yeah, yeah)"
-    ],
-    setQuote: currentQuote => {
-      ls.set("currentQuote", currentQuote)
-      return this.setStatePromise({ currentQuote })
+    selectedSong: false,
+    quote: [],
+    correctSong: {},
+    lyricsUrl: "",
+    songOptions: [],
+    availableSongs: [],
+    nextQuote: [],
+    nextSong: {},
+    nextLyricsUrl: "",
+    nextSongOptions: [],
+    nextAvailableSongs: [],
+    setQuote: quote => {
+      return this.updateStateAndLocal("quote", quote)
+    },
+    setLyricsUrl: lyricsUrl => {
+      return this.updateStateAndLocal("lyricsUrl", lyricsUrl)
     },
     setUser: user => {
-      ls.set("user", user)
-      this.setStatePromise({ user })
+      return this.updateStateAndLocal("user", user)
     },
-    selectSong: selectedSong => {
-      ls.set("selectedSong", selectedSong)
-      return this.setStatePromise({ selectedSong })
+    setSong: selectedSong => {
+      return this.updateStateAndLocal("selectedSong", selectedSong)
     },
-    chooseNewCorrectSong: () => {
-      const { currentSongs } = this.state
-      const correctSong = sample(currentSongs)
-      ls.set("correctSong", correctSong)
-      return this.setStatePromise({ correctSong })
+    setCorrectSong: correctSong => {
+      return this.updateStateAndLocal("correctSong", correctSong)
     },
-    chooseNewOptions: () => {
-      const { availableSongs, correctSong } = this.state
-      const nextAvailableSongs = availableSongs.filter(
-        ({ title }) => title !== correctSong.title
-      )
-      const currentSongs = sampleSize(nextAvailableSongs, 4)
-      ls.set("currentSongs", currentSongs)
-      ls.set("availableSongs", nextAvailableSongs)
-      return this.setStatePromise({
-        currentSongs,
-        availableSongs: nextAvailableSongs
-      })
+    setSongOptions: songOptions => {
+      return this.updateStateAndLocal("songOptions", songOptions)
     },
-    adjustScore: increase => {
-      const { count, correct } = this.state.score
-      const newScore = {
-        count: count + 1,
-        correct: increase ? correct + 1 : correct
-      }
-      ls.set("score", newScore)
-      return this.setStatePromise({ score: newScore })
+    setAvailableSongs: availableSongs => {
+      return this.updateStateAndLocal("availableSongs", availableSongs)
     },
-    resetScore: () => {
-      const newScore = {
-        count: 0,
-        correct: 0
-      }
-      ls.set("score", newScore)
-      return this.setStatePromise({ score: newScore })
+    setNextSongOptions: nextSongOptions => {
+      return this.updateStateAndLocal("nextSongOptions", nextSongOptions)
+    },
+    setNextSong: nextSong => {
+      return this.updateStateAndLocal("nextSong", nextSong)
+    },
+    setNextLyricsUrl: nextLyricsUrl => {
+      return this.updateStateAndLocal("nextLyricsUrl", nextLyricsUrl)
+    },
+    setNextQuote: nextQuote => {
+      return this.updateStateAndLocal("nextQuote", nextQuote)
+    },
+    setNextAvailableSongs: nextAvailableSongs => {
+      return this.updateStateAndLocal("nextAvailableSongs", nextAvailableSongs)
+    },
+    setScore: score => {
+      return this.updateStateAndLocal("score", score)
     },
     logIn: () => {
       return this.setStatePromise({ loggedIn: true })
@@ -114,21 +86,162 @@ class State extends Component {
     logOut: () => {
       return this.setStatePromise({ loggedIn: false })
     },
+    adjustScore: increase => {
+      const { count, correct } = this.state.score
+      this.state.setScore({
+        count: count + 1,
+        correct: increase ? correct + 1 : correct
+      })
+    },
+    resetScore: () => {
+      this.state.setScore({
+        count: 0,
+        correct: 0
+      })
+    },
     goToNextSong: async () => {
-      await this.state.chooseNewOptions()
-      await this.state.chooseNewCorrectSong()
-      await this.state.selectSong(false)
+      // if we already have the next question set up, use that
+      const {
+        nextSong,
+        nextQuote,
+        nextSongOptions,
+        nextAvailableSongs,
+        nextLyricsUrl
+      } = this.nextQuestionReady()
+        ? this.state
+        : await this.getQuestion(this.state.correctSong)
+      await this.resetNextQuestion()
+      await this.state.setSongOptions(nextSongOptions)
+      await this.state.setQuote(nextQuote)
+      await this.state.setLyricsUrl(nextLyricsUrl)
+      await this.state.setAvailableSongs(nextAvailableSongs)
+      await this.state.setCorrectSong(nextSong)
+      await this.state.setSong(false)
+      this.getNextQuestion()
     },
     resetGame: async () => {
       const { data: availableSongs } = await getRecent()
-      const currentSongs = sampleSize(availableSongs, 4)
-      ls.set("currentSongs", currentSongs)
-      ls.set("availableSongs", availableSongs)
-      await this.setStatePromise({ currentSongs, availableSongs })
-      await this.state.chooseNewCorrectSong()
-      await this.state.selectSong(false)
-      await this.state.resetScore()
+      await this.state.setAvailableSongs(sampleSize(availableSongs, 10))
+      const {
+        nextSong,
+        nextQuote,
+        nextSongOptions,
+        nextAvailableSongs,
+        nextLyricsUrl
+      } = await this.getQuestion({})
+      await this.state.setSongOptions(nextSongOptions)
+      await this.state.setQuote(nextQuote)
+      await this.state.setLyricsUrl(nextLyricsUrl)
+      await this.state.setCorrectSong(nextSong)
+      await this.state.setAvailableSongs(nextAvailableSongs)
+      await this.state.setSong(false)
+      await this.resetScore()
+      this.getNextQuestion()
     }
+  }
+
+  getNextQuestion = async () => {
+    const { correctSong: currentCorrectSong } = this.state
+    const {
+      nextSong,
+      nextQuote,
+      nextSongOptions,
+      nextAvailableSongs,
+      nextLyricsUrl
+    } = await this.getQuestion(currentCorrectSong)
+    await this.state.setNextSongOptions(nextSongOptions)
+    await this.state.setNextQuote(nextQuote)
+    await this.state.setNextLyricsUrl(nextLyricsUrl)
+    await this.state.setNextSong(nextSong)
+    await this.state.setNextAvailableSongs(nextAvailableSongs)
+  }
+
+  resetNextQuestion = async () => {
+    await this.state.setNextSongOptions([])
+    await this.state.setNextQuote([])
+    await this.state.setNextSong({})
+    await this.state.setNextLyricsUrl("")
+  }
+
+  getSongQuote = async (artist, title) => {
+    const {
+      data: { lyrics, url }
+    } = await getLyrics(artist, title)
+    if (lyrics) {
+      const firstLineIndex = random(0, lyrics.length - 2)
+      const quote = [lyrics[firstLineIndex], lyrics[firstLineIndex + 1]]
+      if (quote[0] && quote[0].length > MAX_LINE_LENGTH) {
+        return {
+          quote: [`${quote[0].substr(0, MAX_LINE_LENGTH)}...`],
+          url
+        }
+      } else {
+        return {
+          quote,
+          url
+        }
+      }
+    } else {
+      return {
+        quote: null,
+        url: null
+      }
+    }
+  }
+
+  nextQuestionReady = () => {
+    const {
+      nextSong,
+      nextQuote,
+      nextSongOptions,
+      nextAvailableSongs,
+      nextLyricsUrl
+    } = this.state
+    const a =
+      !isEmpty(nextSong) &&
+      !isEmpty(nextQuote) &&
+      !isEmpty(nextSongOptions) &&
+      !isEmpty(nextAvailableSongs) &&
+      nextLyricsUrl !== ""
+    return a
+  }
+
+  getQuestion = async (songToExclude = {}) => {
+    const { availableSongs } = this.state
+    let getRidOfSong = songToExclude
+    let nextAvailableSongs = []
+    let nextSongOptions = []
+    let nextSong = {}
+    let response = {}
+    let nextQuote = false
+    let nextLyricsUrl = ""
+    while (!nextQuote) {
+      nextAvailableSongs = availableSongs.filter(
+        ({ title }) => title !== getRidOfSong.title
+      )
+      nextSongOptions = sampleSize(nextAvailableSongs, 4)
+      nextSong = sample(nextSongOptions)
+      response = await this.getSongQuote(nextSong.artist, nextSong.title)
+      nextQuote = response.quote
+      nextLyricsUrl = response.url
+      // if no quote, set up this song to be ignored in
+      // the next list of available songs
+      getRidOfSong = nextSong
+    }
+    return {
+      nextSong,
+      nextQuote,
+      nextSongOptions,
+      nextAvailableSongs,
+      nextLyricsUrl
+    }
+  }
+
+  resetScore = () => {
+    this.state.setScore({
+      count: 0,
+      correct: 0
+    })
   }
 
   componentDidMount = async () => {

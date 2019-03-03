@@ -1,13 +1,18 @@
 import React, { Component } from "react"
 import { css } from "emotion"
+import { mq } from "../styles/"
 import { StateConsumer } from "../context/state"
 
-const quoteWrapperStyle = css({
-  fontSize: 20,
-  lineHeight: 1.5,
-  whiteSpace: "pre-wrap",
-  marginBottom: 30
-})
+const MAX_LENGTH = 100
+
+const quoteWrapperStyle = css(
+  mq({
+    fontSize: [20, 30, 35],
+    lineHeight: 1.5,
+    whiteSpace: "pre-wrap",
+    marginBottom: 30
+  })
+)
 
 const quoteLineStyle = css({
   display: "inline",
@@ -19,14 +24,19 @@ class Quote extends Component {
   render() {
     return (
       <StateConsumer>
-        {({ currentQuote, correctSong }) => (
+        {({ quote, correctSong }) => (
           <div className={quoteWrapperStyle}>
-            <p className={quoteLineStyle}>{correctSong.title}</p>
-            {currentQuote.map((line, index) => (
-              <div key={index} style={{ paddingLeft: 4, paddingRight: 4 }}>
-                <p className={quoteLineStyle}>{line}</p>
-              </div>
-            ))}
+            {quote.map((line, index) => {
+              const displayLine =
+                line && line.length > MAX_LENGTH
+                  ? `${line.substr(0, MAX_LENGTH)}...`
+                  : line
+              return (
+                <div key={index} style={{ paddingLeft: 4, paddingRight: 4 }}>
+                  <p className={quoteLineStyle}>{displayLine}</p>
+                </div>
+              )
+            })}
           </div>
         )}
       </StateConsumer>

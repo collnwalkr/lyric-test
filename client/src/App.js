@@ -9,7 +9,7 @@ injectGlobal`
     font-family: 'Helvetica' !important;
   }
   body {
-    background-color: #242424;
+    background-color: #191919;
   }
   #root {
     min-height: 100vh;
