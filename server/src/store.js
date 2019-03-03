@@ -6,7 +6,7 @@ mongoose.connect(
     ? `mongodb+srv://lyric-test:${
         process.env.MONGO_ATLAS_PASSWORD
       }@cluster0-qhv6z.mongodb.net/lyric-test-session?retryWrites=true`
-    : "mongodb://localhost:27017/test",
+    : "mongodb://localhost:27017/sessions",
   { useNewUrlParser: true }
 )
 

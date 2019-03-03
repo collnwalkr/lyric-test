@@ -3,8 +3,8 @@ import { css } from "emotion"
 
 const wrapperStyle = css({
   position: "absolute",
-  top: 0,
-  right: 0
+  top: 10,
+  right: 20
 })
 
 const Header = ({ children }) => <div className={wrapperStyle}>{children}</div>

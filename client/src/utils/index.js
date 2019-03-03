@@ -1,4 +1,5 @@
 import ls from "local-storage"
+import ERRORS from "./errors"
 
 const alreadyInLocalStorage = () => {
   const keys = Object.keys(localStorage)
@@ -15,4 +16,4 @@ const alreadyInLocalStorage = () => {
   return archive
 }
 
-export { alreadyInLocalStorage }
+export { ERRORS, alreadyInLocalStorage }

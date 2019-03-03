@@ -3,13 +3,18 @@ import { css } from "emotion"
 import Button from "./button"
 import { mq } from "../styles/"
 import { StateConsumer } from "../context/state"
+import mobile from "is-mobile"
 import { ColorWashConsumer } from "../context/color-wash"
 
-const gameInfoWrapperStyle = css({
-  flex: 1,
-  display: "flex",
-  flexWrap: "wrap"
-})
+const gameInfoWrapperStyle = css(
+  mq({
+    display: "flex",
+    flexBasis: 1165,
+    flexWrap: "wrap",
+    flexDirection: ["column-reverse", "column-reverse", "row"],
+    justifyContent: ["flex-start", "flext-start", "flex-start", "flex-end"]
+  })
+)
 
 const songInfoWrapperStyle = background =>
   css(
@@ -41,7 +46,7 @@ const socialLinkWrapper = disabled =>
     textDecoration: "none",
     marginRight: 10,
     "&:hover": {
-      textDecoration: "underline"
+      textDecoration: !disabled && "underline"
     }
   })
 
@@ -55,10 +60,10 @@ const scoreStyle = css({
   fontSize: 28
 })
 
-const SocialLink = ({ url, image, disabled, children }) => (
+const SocialLink = ({ url, image, disabled, children, target }) => (
   <a
     href={disabled ? null : url}
-    target="_blank"
+    target={target}
     rel="noopener noreferrer"
     className={socialLinkWrapper(disabled)}
   >
@@ -77,10 +82,11 @@ class Songs extends Component {
           score,
           selectedSong,
           correctSong,
-          lyricsUrl
+          lyricsUrl,
+          loading
         }) => (
           <ColorWashConsumer>
-            {({ currentPalette, resetPalette }) => (
+            {({ currentPalette, resetPalette, gameOver }) => (
               <div className={gameInfoWrapperStyle}>
                 <div
                   className={songInfoWrapperStyle(currentPalette.darkVibrant)}
@@ -89,23 +95,25 @@ class Songs extends Component {
                     score.count
                   }`}</p>
                   <SocialLink
+                    target={mobile() ? null : "_blank"}
                     image={process.env.PUBLIC_URL + "/images/spotify-logo.png"}
                     disabled={!selectedSong}
                     url={correctSong.link}
                   >
-                    Spotify link
+                    Spotify
                   </SocialLink>
                   <SocialLink
+                    target="_blank"
                     image={process.env.PUBLIC_URL + "/images/genius-logo.png"}
                     disabled={!selectedSong}
                     url={lyricsUrl}
                   >
-                    Genius link
+                    Genius
                   </SocialLink>
                 </div>
                 <Button
                   className={nextSongStyle}
-                  disabled={!selectedSong}
+                  disabled={!selectedSong || loading}
                   color={currentPalette.lightVibrant}
                   onClick={() => {
                     goToNextSong()
@@ -113,16 +121,6 @@ class Songs extends Component {
                   }}
                 >
                   Next Song
-                </Button>
-                <Button
-                  className={nextSongStyle}
-                  color={"red"}
-                  onClick={() => {
-                    resetGame()
-                    resetPalette()
-                  }}
-                >
-                  New Game
                 </Button>
               </div>
             )}

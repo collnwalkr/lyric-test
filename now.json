@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "name": "lyric-test",
+  "name": "lyric-quiz",
   "builds": [
     {
       "src": "client/package.json",

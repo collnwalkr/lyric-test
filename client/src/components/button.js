@@ -11,7 +11,7 @@ const buttonStyle = (color, disabled) =>
       display: "inline-block",
       fontFamily: "Helvetica Neue",
       fontSize: [20, 28],
-      padding: [`8px 12px`, `16px 20px`],
+      padding: [`12px 12px`, `16px 20px`],
       minWidth: 258,
       textAlign: "center",
       boxShadow: "0px 0px 8px rgba(0,0,0,0.2)",

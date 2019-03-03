@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import React from "react"
 import { css } from "emotion"
 import Palette from "react-palette"
 import Song from "./song"
@@ -16,44 +16,50 @@ const albumsWrapperStyle = css(
   })
 )
 
-class Songs extends Component {
-  render() {
-    return (
-      <StateConsumer>
-        {({ songOptions, correctSong, selectedSong, setSong, adjustScore }) => (
-          <ColorWashConsumer>
-            {({ changePalette }) => (
-              <Palette image={correctSong.album_image}>
-                {derivedPalette => {
-                  const palette = getPalette(derivedPalette)
-                  return (
-                    <div className={albumsWrapperStyle}>
-                      {songOptions.map((songObj, index) => (
-                        <Song
-                          key={index}
-                          correct={songObj.title === correctSong.title}
-                          selected={songObj.title === selectedSong}
-                          madeASelection={selectedSong}
-                          onClick={title => {
-                            if (!selectedSong) {
-                              changePalette(palette)
-                              setSong(title)
-                              adjustScore(correctSong.title === title)
-                            }
-                          }}
-                          {...songObj}
-                        />
-                      ))}
-                    </div>
-                  )
-                }}
-              </Palette>
-            )}
-          </ColorWashConsumer>
+const Songs = () => (
+  <StateConsumer>
+    {({
+      songOptions,
+      correctSong,
+      selectedSong,
+      setSelectedSong,
+      adjustScore
+    }) => (
+      <ColorWashConsumer>
+        {({ changePalette }) => (
+          <Palette image={correctSong.album_image}>
+            {derivedPalette => {
+              const palette = getPalette(derivedPalette)
+              return (
+                <div className={albumsWrapperStyle}>
+                  {songOptions.map((songObj, index) => (
+                    <Song
+                      key={index}
+                      correct={songObj.title === correctSong.title}
+                      selected={songObj.title === selectedSong}
+                      madeASelection={selectedSong}
+                      onClick={title => {
+                        if (!selectedSong) {
+                          changePalette(palette)
+                          setSelectedSong(title)
+                          window.scrollTo({
+                            top: document.body.scrollHeight,
+                            behavior: "smooth"
+                          })
+                          adjustScore(correctSong.title === title)
+                        }
+                      }}
+                      {...songObj}
+                    />
+                  ))}
+                </div>
+              )
+            }}
+          </Palette>
         )}
-      </StateConsumer>
-    )
-  }
-}
+      </ColorWashConsumer>
+    )}
+  </StateConsumer>
+)
 
 export default Songs

@@ -5,6 +5,8 @@ const genius = require("./src/genius")
 const middleware = require("./src/middleware")
 const store = require("./src/store")
 const passport = require("./src/passport")
+const limiter = require("./src/limiter")
+const uniqBy = require("lodash/uniqBy")
 
 const app = express()
 
@@ -18,7 +20,7 @@ app.get("/api/", (req, res) => {
   }
 })
 
-app.get("/api/lyrics/:artist/:song", checkAccess, (req, res) => {
+app.get("/api/lyrics/:artist/:song", limiter, checkAccess, (req, res) => {
   genius
     .getLyrics(req.params.artist, req.params.song)
     .then(response => {
@@ -65,7 +67,7 @@ app.get("/api/recent", checkAccess, (req, res) => {
           }
         }
       })
-      res.send(responseItems)
+      res.send(uniqBy(responseItems, "link"))
     })
     .catch(error => {
       res.status(500).send(error)
@@ -86,6 +88,7 @@ app.get("/api/logout", (req, res) => {
 app.get(
   "/api/auth/spotify",
   passport.authenticate("spotify", {
+    showDialog: true,
     scope: ["user-read-recently-played"]
   }),
   (req, res) => {}

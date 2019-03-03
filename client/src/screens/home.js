@@ -9,6 +9,39 @@ const logoutURL =
     ? "/api/logout"
     : "http://localhost:3030/api/logout"
 
+const loginURL =
+  process.env.NODE_ENV === "production"
+    ? "/api/login"
+    : "http://localhost:3030/api/login"
+
+const headerStyle = css({
+  marginBottom: 50,
+  fontSize: 100
+})
+
+const loggedInUserStyle = css({
+  marginBottom: 50,
+  display: "flex",
+  alignItems: "center",
+  flexDirection: "column"
+})
+
+const logOutLinkStyle = css({
+  cursor: "pointer",
+  fontSize: 14,
+  marginTop: 15,
+  textDecoration: "underline",
+  color: "#7aafff",
+  "&: hover": {
+    color: "#96c0ff"
+  }
+})
+
+const buttonStyle = css({
+  width: "100%",
+  marginTop: 10
+})
+
 const wrapperStyle = css({
   width: "100%",
   display: "flex",
@@ -17,26 +50,68 @@ const wrapperStyle = css({
   justifyContent: "center"
 })
 
+const buttonsWrapper = css({
+  display: "flex",
+  flexDirection: "column"
+})
+
 const profileImageStyle = css({
   height: 200,
   width: 200,
-  borderRadius: "50%",
-  marginBottom: 100
+  borderRadius: "50%"
 })
 
-const Home = () => (
+const Home = ({ history }) => (
   <StateConsumer>
-    {({ user }) => (
-      <div className={wrapperStyle}>
-        <img className={profileImageStyle} src={user.photo} alt="" />
-        <Link to="/play">
-          <Button color="#1DB954">Continue Game</Button>
-        </Link>
-        <Button href={logoutURL} color="red">
-          Logout
-        </Button>
-      </div>
-    )}
+    {({ user, loggedIn, logOut, gameOver, resetGame, loading }) =>
+      loggedIn === undefined ? null : loggedIn ? (
+        <div className={wrapperStyle}>
+          <div className={loggedInUserStyle}>
+            <img className={profileImageStyle} src={user.photo} alt="" />
+            <a
+              onClick={async () => {
+                await logOut()
+                window.location.href = logoutURL
+              }}
+              className={logOutLinkStyle}
+            >
+              {`Not ${user.displayName}? Log out.`}
+            </a>
+          </div>
+          <div className={buttonsWrapper}>
+            <Link to="/play">
+              {!gameOver && (
+                <Button
+                  className={buttonStyle}
+                  disabled={loading}
+                  color="#1DB954"
+                >
+                  Continue game
+                </Button>
+              )}
+            </Link>
+            <Button
+              disabled={loading}
+              className={buttonStyle}
+              color="#ef34b1"
+              onClick={async () => {
+                await resetGame()
+                history.push("/play")
+              }}
+            >
+              Start new game
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div className={wrapperStyle}>
+          <h1 className={headerStyle}>🎧</h1>
+          <Button href={loginURL} color="#1DB954">
+            Connect Spotify
+          </Button>
+        </div>
+      )
+    }
   </StateConsumer>
 )
 

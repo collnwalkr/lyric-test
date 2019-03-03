@@ -1,8 +1,10 @@
 import React, { Component } from "react"
 import { css } from "emotion"
-import { getRecent } from "../api"
+import { Link } from "react-router-dom"
 import { ColorWashConsumer } from "../context/color-wash"
+import Header from "../components/header"
 import Songs from "../components/songs"
+import GameOver from "../components/game-over"
 import Quote from "../components/quote"
 import GameInfo from "../components/game-info"
 
@@ -11,7 +13,7 @@ const gameWrapperStyle = backgroundColor =>
     transition: "background-color 300ms ease",
     backgroundColor,
     width: "100%",
-    paddingTop: 20,
+    paddingTop: 30,
     paddingLeft: 20
   })
 
@@ -22,24 +24,36 @@ const playAreaWrapperStyle = css({
   alignItems: "flex-start"
 })
 
-class Game extends Component {
-  componentDidMount() {
-    // getRecent().then(({ data }) => {
-    //   console.log("data", data)
-    // })
+const linkStyle = css({
+  fontSize: 14,
+  color: "#7aafff",
+  textDecoration: "none",
+  "&: hover": {
+    textDecoration: "none",
+    color: "#96c0ff"
   }
+})
 
+class Game extends Component {
   render() {
     return (
       <ColorWashConsumer>
         {({ currentPalette }) => (
-          <div className={gameWrapperStyle(currentPalette.darkMuted)}>
-            <Quote />
-            <div className={playAreaWrapperStyle}>
-              <Songs />
-              <GameInfo />
+          <React.Fragment>
+            <Header>
+              <Link to="/" className={linkStyle}>
+                Home
+              </Link>
+            </Header>
+            <div className={gameWrapperStyle(currentPalette.darkMuted)}>
+              <GameOver />
+              <Quote />
+              <div className={playAreaWrapperStyle}>
+                <Songs />
+                <GameInfo />
+              </div>
             </div>
-          </div>
+          </React.Fragment>
         )}
       </ColorWashConsumer>
     )

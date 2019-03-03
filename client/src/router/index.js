@@ -1,29 +1,20 @@
 import React from "react"
-import {
-  BrowserRouter as Router,
-  Route,
-  Link,
-  Redirect
-} from "react-router-dom"
-import Header from "../components/header"
+import { BrowserRouter, Route, Redirect } from "react-router-dom"
+import TopLoader from "../components/top-loader"
 import Home from "../screens/home"
 import Game from "../screens/game"
-import Connect from "../screens/connect"
 import { StateConsumer } from "../context/state"
 
-const AuthExample = () => (
+const Router = () => (
   <StateConsumer>
-    {({ loggedIn, logIn, logOut }) => (
-      <Router>
+    {({ loggedIn, logIn, logOut, loading }) => (
+      <BrowserRouter>
         <React.Fragment>
-          <Header>
-            <Link to="/">Home</Link>
-          </Header>
-          <PublicRoute path="/connect" component={Connect} />
-          <PrivateRoute exact path="/" component={Home} />
+          {loading && <TopLoader />}
+          <PublicRoute exact path="/" component={Home} />
           <PrivateRoute path="/play" component={Game} />
         </React.Fragment>
-      </Router>
+      </BrowserRouter>
     )}
   </StateConsumer>
 )
@@ -54,4 +45,4 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
   </StateConsumer>
 )
 
-export default AuthExample
+export default Router
